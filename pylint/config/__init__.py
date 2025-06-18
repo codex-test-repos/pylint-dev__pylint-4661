@@ -60,10 +60,14 @@ if "PYLINTHOME" in os.environ:
     PYLINT_HOME = os.environ["PYLINTHOME"]
     if USER_HOME == "~":
         USER_HOME = os.path.dirname(PYLINT_HOME)
-elif USER_HOME == "~":
-    PYLINT_HOME = ".pylint.d"
 else:
-    PYLINT_HOME = os.path.join(USER_HOME, ".pylint.d")
+    xdg_cache_home = os.environ.get("XDG_CACHE_HOME")
+    if xdg_cache_home:
+        PYLINT_HOME = os.path.join(xdg_cache_home, "pylint")
+    elif USER_HOME == "~":
+        PYLINT_HOME = ".pylint.d"
+    else:
+        PYLINT_HOME = os.path.join(USER_HOME, ".cache", "pylint")
 
 
 def _get_pdata_path(base_name, recurs):
