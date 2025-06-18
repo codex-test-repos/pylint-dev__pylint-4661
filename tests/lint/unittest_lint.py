@@ -628,10 +628,14 @@ def pop_pylintrc():
 @pytest.mark.usefixtures("pop_pylintrc")
 def test_pylint_home():
     uhome = os.path.expanduser("~")
-    if uhome == "~":
+    if "XDG_CACHE_HOME" in os.environ:
+        cache_home = os.environ["XDG_CACHE_HOME"]
+    else:
+        cache_home = os.path.join(uhome, ".cache")
+    if uhome == "~" and "XDG_CACHE_HOME" not in os.environ:
         expected = ".pylint.d"
     else:
-        expected = os.path.join(uhome, ".pylint.d")
+        expected = os.path.join(cache_home, "pylint")
     assert config.PYLINT_HOME == expected
 
     try:
